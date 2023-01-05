@@ -1,4 +1,4 @@
-import './style.css'
+// import './style.css'
 
 
 document.getElementById("grabVideo").addEventListener("click", () => getStream('video'), false);
