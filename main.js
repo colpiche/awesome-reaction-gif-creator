@@ -1,8 +1,15 @@
-// import './style.css'
+import FFmpeg from "@ffmpeg/ffmpeg";
 
 
-document.getElementById("grabVideo").addEventListener("click", () => getStream('video'), false);
-document.getElementById("grabAudio").addEventListener("click", () => getStream('audio'), false);
+var theStream;
+let allTheBlobs = [];
+
+
+document.getElementById("initCamera").addEventListener("click", getStream, false);
+document.getElementById("takePhoto").addEventListener("click", takePhoto, false);
+document.getElementById("create-gif").addEventListener('click', encodeGIF, false);
+// document.getElementById("grabAudio").addEventListener("click", () => getStream('audio'), false);
+
 
 
 function getUserMedia(constraints) {
@@ -31,12 +38,13 @@ function getStream(type) {
         return;
     }
 
-    var constraints = {};
-    constraints[type] = true;
+    var constraints = {
+        video: true
+    };
 
     getUserMedia(constraints)
         .then(function (stream) {
-            var mediaControl = document.querySelector(type);
+            var mediaControl = document.querySelector('video');
 
             if ('srcObject' in mediaControl) {
                 mediaControl.srcObject = stream;
@@ -46,26 +54,67 @@ function getStream(type) {
                 mediaControl.src = (window.URL || window.webkitURL).createObjectURL(stream);
             }
 
-            mediaControl.play();
+            // mediaControl.play();
+            theStream = stream;
         })
         .catch(function (err) {
             alert('Error: ' + err);
         });
 }
 
+function takePhoto() {
+    if (!('ImageCapture' in window)) {
+        alert('ImageCapture is not available');
+        return;
+    }
 
+    if (!theStream) {
+        alert('Grab the video stream first!');
+        return;
+    }
 
-// document.querySelector('#app').innerHTML = `
-// <div class="columns">
-//     <div class="column">
-//         <p><button type="button" onclick=${getStream('video')}>Grab video</button></p>
+    var theImageCapturer = new ImageCapture(theStream.getVideoTracks()[0]);
 
-//         <video controls autoplay style="height:180px; width: 240px;"></video>
-//     </div>
-//     <div class="column">
-//         <p><button type="button" onclick=${getStream('audio')}>Grab audio</button></p>
+    theImageCapturer.takePhoto()
+        .then(blob => {
+            var theImageTag = document.getElementById("imageTag");
+            theImageTag.src = URL.createObjectURL(blob);
+            // console.log(blob);
+            allTheBlobs.push(blob);
+        })
+        .catch(err => alert('Error: ' + err));
+}
 
-//         <audio controls></audio>
-//     </div>
-// </div>
-// `
+///////////////////////////////////////////////////////////////////////////////
+// FFMPEG
+///////////////////////////////////////////////////////////////////////////////
+
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
+
+const encodeGIF = async () => {
+    const message = document.getElementById('message');
+    message.innerHTML = 'Loading ffmpeg-core.js';
+    await ffmpeg.load();
+    message.innerHTML = 'Loading data';
+    for (let i = 0; i < allTheBlobs.length; i += 1) {
+        const num = `${i}`;
+        ffmpeg.FS('writeFile', `${num}.png`, await fetchFile(allTheBlobs[i]));
+    }
+    message.innerHTML = 'Start transcoding';
+    await ffmpeg.run(
+        '-framerate', '2',
+        '-pattern_type', 'glob',
+        '-i', '*.png',
+        '-s', '640x480',
+        'out.gif'
+    );
+    const data = ffmpeg.FS('readFile', 'out.gif');
+    for (let i = 0; i < allTheBlobs.length; i += 1) {
+        const num = `${i}`;
+        ffmpeg.FS('unlink', `${num}.png`);
+    }
+
+    const gif = document.getElementById('output-gif');
+    gif.src = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }));
+}
