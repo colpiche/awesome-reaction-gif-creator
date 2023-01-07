@@ -36,8 +36,12 @@ function getUserMedia(constraints) {
 
 
 function getStream(type) {
-    if (!navigator.mediaDevices && !navigator.getUserMedia && !navigator.webkitGetUserMedia &&
-        !navigator.mozGetUserMedia && !navigator.msGetUserMedia) {
+    if (!navigator.mediaDevices &&
+        !navigator.getUserMedia &&
+        !navigator.webkitGetUserMedia &&
+        !navigator.mozGetUserMedia &&
+        !navigator.msGetUserMedia
+    ) {
         alert('User Media API not supported.');
         return;
     }

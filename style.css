@@ -17,10 +17,23 @@
 
 .afterCamInit {
     display: none;
-    width: 100vw;
+    /* width: 100vw; */
     /* display: flex; */
     /* place-items: center; */
     justify-content: space-between;
+    /* display: flex; */
+    /* flex-wrap: wrap;
+    flex: 1; */
+    /* justify-content: space-between; */
+    align-items: center;
+    min-width: 100%;
+}
+
+.beforeCamInit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
 }
 
 body {
@@ -31,6 +44,7 @@ body {
     align-items: center;
     min-width: 320px;
     min-height: 95vh;
+    text-align: center;
     /* width: 100vw;
     height: 100vh;
     background-color: #ffb6b6; */
@@ -65,14 +79,16 @@ button:focus-visible {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    /* min-height: 100em; */
+    height: 100%;
 }
 
 #content {
     display: flex;
     /* flex-wrap: wrap; */
-    justify-content: space-between;
-    align-items: center;
-    max-width: 95%;
+    /* justify-content: space-between;
+    align-items: center; */
+    width: 95%;
 }
 
 .media {
@@ -84,7 +100,7 @@ button:focus-visible {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-width: 200px;
+    /* min-width: 200px; */
     width: 23%;
 }
 
@@ -104,5 +120,11 @@ button:focus-visible {
 
     button {
         background-color: #f9f9f9;
+    }
+}
+
+@media (max-width: 500px) {
+    .afterCamInit {
+        flex-direction: column;
     }
 }
