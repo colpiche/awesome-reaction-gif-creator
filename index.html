@@ -11,28 +11,32 @@
 </head>
 
 <body>
-    <div class="content">
-        <div>
+    <div id="header">
+        <h1>What an awesome reaction GIF creator !</h1>
+    </div>
+    <div id="content">
+        <div class="beforeCamInit">
             <p><button type="button" id="initCamera">Initialize camera</button></p>
         </div>
         <div class="afterCamInit">
-            <div id="camDiv">
-                <video id="camera" autoplay style="height:180px; width: 240px;"></video>
+            <div class="mediaDiv" id="camDiv">
+                <video class="media" id="camera" autoplay></video>
             </div>
-            <div id="photoDiv">
-                <p><button type="button" id="takePhoto">Take photo</button></p>
-                <p><img id="photo" width="240" height="180"></p>
+            <div class="mediaDiv" id="photoDiv">
+                <button type="button" id="takePhotoButton">Take photo</button>
+                <img class="media" class="mediaToDisplayLater" id="photo">
             </div>
-            <div id="gifDiv">
-                <p><button id="createGIF">Create GIF</button></p>
-                <p id="message"></p>
-                <p><img id="gif" /></p>
+            <div class="mediaDiv" id="gifDiv">
+                <button type="button" class="buttonToDisplayLater" id="createGIFButton">Create GIF</button>
+                <!-- <p id="message"></p> -->
+                <img class="media" class="mediaToDisplayLater" id="gif" />
             </div>
-            <div>
-                <p><button id="download">Download</button></p>
+            <div class="mediaDiv">
+                <button type="button" class="buttonToDisplayLater" id="downloadButton">Download</button>
             </div>
         </div>
-        
+    </div>
+    <div id="footer">
     </div>
 </body>
 

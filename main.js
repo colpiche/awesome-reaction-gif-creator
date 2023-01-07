@@ -11,9 +11,9 @@ const ffmpeg = createFFmpeg({ log: true });
 
 window.addEventListener("load", getStream, false);
 document.getElementById("initCamera").addEventListener("click", getStream, false);
-document.getElementById("takePhoto").addEventListener("click", takePhoto, false);
-document.getElementById("createGIF").addEventListener('click', encodeGIF, false);
-document.getElementById("download").addEventListener('click', download, false);
+document.getElementById("takePhotoButton").addEventListener("click", takePhoto, false);
+document.getElementById("createGIFButton").addEventListener('click', encodeGIF, false);
+document.getElementById("downloadButton").addEventListener('click', download, false);
 
 
 function getUserMedia(constraints) {
@@ -65,7 +65,7 @@ function getStream(type) {
             alert('Error: ' + err);
         });
     
-        document.querySelector('#initCamera').style.display = "none";
+        document.querySelector('.beforeCamInit').style.display = "none";
         document.querySelector('.afterCamInit').style.display = "flex";
 }
 
@@ -87,6 +87,8 @@ function takePhoto() {
         .then(blob => {
             var thePhoto = document.getElementById("photo");
             thePhoto.src = URL.createObjectURL(blob);
+            document.querySelector('#photo').style.display = "flex";
+            document.querySelector('#createGIFButton').style.display = "flex";
             // console.log(blob);
             allTheBlobs.push(blob);
         })
@@ -101,21 +103,21 @@ async function encodeGIF() {
         return;
     }
 
-    const message = document.getElementById('message');
-    document.querySelector('#message').style.display = "flex";
+    // const message = document.getElementById('message');
+    // document.querySelector('#message').style.display = "flex";
 
     if (!ffmpeg.isLoaded()) {
-        message.innerHTML = 'Loading ffmpeg-core.js';
+        // message.innerHTML = 'Loading ffmpeg-core.js';
         await ffmpeg.load();
     }
 
-    message.innerHTML = 'Loading data';
+    // message.innerHTML = 'Loading data';
     for (let i = 0; i < allTheBlobs.length; i += 1) {
         const num = `${i}`;
         ffmpeg.FS('writeFile', `${num}.png`, await fetchFile(allTheBlobs[i]));
     }
 
-    message.innerHTML = 'Start encoding';
+    // message.innerHTML = 'Start encoding';
     await ffmpeg.run(
         '-framerate', '2',
         '-pattern_type', 'glob',
@@ -131,8 +133,9 @@ async function encodeGIF() {
 
     gif = document.getElementById('gif');
     gif.src = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }));
-    message.innerHTML = 'Done';
-    document.querySelector('#message').style.display = "none";
+    // message.innerHTML = 'Done';
+    // document.querySelector('#message').style.display = "none";
+    document.querySelector('#downloadButton').style.display = "flex";
 
     allTheBlobs = [];
 }

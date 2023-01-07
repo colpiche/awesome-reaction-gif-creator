@@ -15,65 +15,26 @@
     -webkit-text-size-adjust: 100%;
 }
 
-/* a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-}
-
-a:hover {
-    color: #535bf2;
-} */
-
 .afterCamInit {
     display: none;
     width: 100vw;
+    /* display: flex; */
     /* place-items: center; */
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 body {
-    margin: 0;
+    /* margin: 0; */
     display: flex;
-    place-items: center;
-    /* justify-content: space-around; */
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     min-width: 320px;
-    min-height: 100vh;
+    min-height: 95vh;
     /* width: 100vw;
     height: 100vh;
     background-color: #ffb6b6; */
 }
-
-/* h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
-} */
-
-/* html {
-    background-color: #ffb6b6;
-} */
-
-/* .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-}
-
-.logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vanilla:hover {
-    filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-    padding: 2em;
-}
-
-.read-the-docs {
-    color: #888;
-} */
 
 button {
     border-radius: 8px;
@@ -94,6 +55,41 @@ button:hover {
 button:focus,
 button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+}
+
+.buttonToDisplayLater {
+    display: none;
+}
+
+#camDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+#content {
+    display: flex;
+    /* flex-wrap: wrap; */
+    justify-content: space-between;
+    align-items: center;
+    max-width: 95%;
+}
+
+.media {
+    width: 100%;
+}
+
+.mediaDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+    width: 23%;
+}
+
+.mediaToDisplayLater {
+    display: none;
 }
 
 @media (prefers-color-scheme: light) {
