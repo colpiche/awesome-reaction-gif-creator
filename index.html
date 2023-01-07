@@ -11,27 +11,28 @@
 </head>
 
 <body>
-    <div class="WHATWEBCANDO">
-        <div class="column">
+    <div class="content">
+        <div>
             <p><button type="button" id="initCamera">Initialize camera</button></p>
-    
-            <video autoplay style="height:180px; width: 240px;"></video>
         </div>
-        <div class="column">
-            <!-- <p><button type="button" id="grabAudio">Grab audio</button></p>
-    
-            <audio controls></audio> -->
-
-            <p><button type="button" id="takePhoto">Take photo !</button></p>
-            <p><img id="imageTag" width="240" height="180"></p>
+        <div class="afterCamInit">
+            <div id="camDiv">
+                <video id="camera" autoplay style="height:180px; width: 240px;"></video>
+            </div>
+            <div id="photoDiv">
+                <p><button type="button" id="takePhoto">Take photo</button></p>
+                <p><img id="photo" width="240" height="180"></p>
+            </div>
+            <div id="gifDiv">
+                <p><button id="createGIF">Create GIF</button></p>
+                <p id="message"></p>
+                <p><img id="gif" /></p>
+            </div>
+            <div>
+                <p><button id="download">Download</button></p>
+            </div>
         </div>
-    </div>
-
-    <div class="FFMPEG.WASM">
-        <!-- <video id="output-video" controls></video><br/> -->
-        <img id="output-gif" />
-        <button id="create-gif">Create GIF</button>
-        <p id="message"></p>
+        
     </div>
 </body>
 

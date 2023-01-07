@@ -2,14 +2,18 @@ import FFmpeg from "@ffmpeg/ffmpeg";
 
 
 var theStream;
+var gif;
 let allTheBlobs = [];
 
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
 
+
+window.addEventListener("load", getStream, false);
 document.getElementById("initCamera").addEventListener("click", getStream, false);
 document.getElementById("takePhoto").addEventListener("click", takePhoto, false);
-document.getElementById("create-gif").addEventListener('click', encodeGIF, false);
-// document.getElementById("grabAudio").addEventListener("click", () => getStream('audio'), false);
-
+document.getElementById("createGIF").addEventListener('click', encodeGIF, false);
+document.getElementById("download").addEventListener('click', download, false);
 
 
 function getUserMedia(constraints) {
@@ -60,11 +64,15 @@ function getStream(type) {
         .catch(function (err) {
             alert('Error: ' + err);
         });
+    
+        document.querySelector('#initCamera').style.display = "none";
+        document.querySelector('.afterCamInit').style.display = "flex";
 }
+
 
 function takePhoto() {
     if (!('ImageCapture' in window)) {
-        alert('ImageCapture is not available');
+        alert('ImageCapture is not available. Visit https://caniuse.com/imagecapture to find a compatible browser.');
         return;
     }
 
@@ -77,31 +85,37 @@ function takePhoto() {
 
     theImageCapturer.takePhoto()
         .then(blob => {
-            var theImageTag = document.getElementById("imageTag");
-            theImageTag.src = URL.createObjectURL(blob);
+            var thePhoto = document.getElementById("photo");
+            thePhoto.src = URL.createObjectURL(blob);
             // console.log(blob);
             allTheBlobs.push(blob);
         })
         .catch(err => alert('Error: ' + err));
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// FFMPEG
-///////////////////////////////////////////////////////////////////////////////
 
-const { createFFmpeg, fetchFile } = FFmpeg;
-const ffmpeg = createFFmpeg({ log: true });
+async function encodeGIF() {
+    // console.log(allTheBlobs)
+    if (allTheBlobs.length === 0) {
+        alert('Take photos first!');
+        return;
+    }
 
-const encodeGIF = async () => {
     const message = document.getElementById('message');
-    message.innerHTML = 'Loading ffmpeg-core.js';
-    await ffmpeg.load();
+    document.querySelector('#message').style.display = "flex";
+
+    if (!ffmpeg.isLoaded()) {
+        message.innerHTML = 'Loading ffmpeg-core.js';
+        await ffmpeg.load();
+    }
+
     message.innerHTML = 'Loading data';
     for (let i = 0; i < allTheBlobs.length; i += 1) {
         const num = `${i}`;
         ffmpeg.FS('writeFile', `${num}.png`, await fetchFile(allTheBlobs[i]));
     }
-    message.innerHTML = 'Start transcoding';
+
+    message.innerHTML = 'Start encoding';
     await ffmpeg.run(
         '-framerate', '2',
         '-pattern_type', 'glob',
@@ -115,6 +129,24 @@ const encodeGIF = async () => {
         ffmpeg.FS('unlink', `${num}.png`);
     }
 
-    const gif = document.getElementById('output-gif');
+    gif = document.getElementById('gif');
     gif.src = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }));
+    message.innerHTML = 'Done';
+    document.querySelector('#message').style.display = "none";
+
+    allTheBlobs = [];
 }
+
+
+function download() {
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = gif.src;
+    a.download = 'your-awesome-reaction-gif.gif';
+    a.click();
+}
+
+
+
+// window.onload = initCamera;
