@@ -1,16 +1,14 @@
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
-
-
 var theStream;
-var gif;
+var theGif;
 let allTheBlobs = [];
-
 const ffmpeg = createFFmpeg({ log: true });
 
+// Called at script's loading
+window.addEventListener("load", getStream, false);
 
-// window.addEventListener("load", getStream, false);
-// window.addEventListener("load", initCSS, false);
+// Event listeners for buttons
 document.getElementById("initCamera").addEventListener("click", getStream, false);
 document.getElementById("takePhotoButton").addEventListener("click", takePhoto, false);
 document.getElementById("createGIFButton").addEventListener('click', encodeGIF, false);
@@ -18,6 +16,10 @@ document.getElementById("downloadButton").addEventListener('click', download, fa
 
 
 function getStream(type) {
+    /*
+    Method initializing the video stream from the camera.
+    */
+
     if (!navigator.mediaDevices &&
         !navigator.getUserMedia &&
         !navigator.webkitGetUserMedia &&
@@ -47,6 +49,7 @@ function getStream(type) {
 
             theStream = stream;
 
+            // Updating page layout when cam is ready
             document.querySelector('.beforeCamInit').style.display = "none";
             document.querySelector('#camDiv').style.display = "flex";
             document.querySelector('.afterCamInit').style.display = "flex";
@@ -58,6 +61,10 @@ function getStream(type) {
 
 
 function getUserMedia(constraints) {
+    /*
+    Method detecting which API will be used for the video stream.
+    */
+
     // if Promise-based API is available, use it
     if (navigator.mediaDevices) {
         return navigator.mediaDevices.getUserMedia(constraints);
@@ -76,15 +83,16 @@ function getUserMedia(constraints) {
 }
 
 
-// function initCSS() {
-//     // document.querySelector('.mediaToDisplayLater').style.display = "none";
-//     document.querySelector('.afterCamInit').style.display = "none";
-// }
-
-
 function takePhoto() {
+    /*
+    Method capturing a still from the video stream.
+    */
+
     if (!('ImageCapture' in window)) {
-        alert('ImageCapture is not available. Visit https://caniuse.com/imagecapture to find a compatible browser.');
+        alert('\
+            ImageCapture is not available. \
+            Visit https://caniuse.com/imagecapture to find a compatible browser.\
+        ');
         return;
     }
 
@@ -93,13 +101,21 @@ function takePhoto() {
         return;
     }
 
+    // Selecting the stream to capture
     var theImageCapturer = new ImageCapture(theStream.getVideoTracks()[0]);
 
+    // Capturing the still
     theImageCapturer.takePhoto()
         .then(blob => {
+            // Displaying the captured still on the page
             var thePhoto = document.getElementById("photo");
             thePhoto.src = URL.createObjectURL(blob);
+
+            // Pushing the captured still in a list of blobs which will be
+            // passed to the GIF encoder
             allTheBlobs.push(blob);
+
+            // Updating the layout to display next UX step
             document.querySelector('#photoDiv').style.display = "flex";
         })
         .catch(err => alert('Error: ' + err));
@@ -107,20 +123,28 @@ function takePhoto() {
 
 
 async function encodeGIF() {
+    /*
+    Method rendering the so wanted GIF from a list of blobs filled by takePhoto()
+    */
+
+    // Checking if the list is empty
     if (allTheBlobs.length === 0) {
         alert('Take photos first!');
         return;
     }
 
+    // Loading the ffmpeg.wasm library, or not
     if (!ffmpeg.isLoaded()) {
         await ffmpeg.load();
     }
 
+    // Writing the blobs in files inside the cache
     for (let i = 0; i < allTheBlobs.length; i += 1) {
         const num = `${i}`;
         ffmpeg.FS('writeFile', `${num}.png`, await fetchFile(allTheBlobs[i]));
     }
 
+    // Encoding the so wanted GIF
     await ffmpeg.run(
         '-framerate', '2',
         '-pattern_type', 'glob',
@@ -134,8 +158,9 @@ async function encodeGIF() {
         ffmpeg.FS('unlink', `${num}.png`);
     }
 
-    gif = document.getElementById('gif');
-    gif.src = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }));
+    // Updating the page layout to display the GIF
+    theGif = document.getElementById('gif');
+    theGif.src = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }));
     document.querySelector('#gifDiv').style.display = "flex";
 
     allTheBlobs = [];
@@ -143,10 +168,14 @@ async function encodeGIF() {
 
 
 function download() {
+    /*
+    Method to trigger the so wanted GIF download.
+    */
+
     var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
-    a.href = gif.src;
+    a.href = theGif.src;
     a.download = 'your-awesome-reaction-gif.gif';
     a.click();
 }

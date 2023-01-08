@@ -1,3 +1,2 @@
-TO DO :
-- work on css when site is on portrait mode
-- check code wilfried pour voir pourquoi cam ne fonctionne pas sur tel
+# Awesome reaction GIF creator
+Source code of [https://awesomereactiongifcreator.netlify.app/](https://awesomereactiongifcreator.netlify.app/), web app to easily create a stunning reaction GIF of your face.
