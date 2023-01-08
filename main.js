@@ -1,6 +1,6 @@
 // import FFmpeg from "@ffmpeg/ffmpeg";
-// import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg/dist/ffmpeg.min.js";
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+// import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg/dist/ffmpeg.min.js";
 
 
 
