@@ -4,11 +4,6 @@ var theStream;
 var theGif;
 let allTheBlobs = [];
 const ffmpeg = createFFmpeg({ log: true });
-// const ffmpeg = createFFmpeg({
-//     mainName: 'main',
-//     corePath: 'https://unpkg.com/@ffmpeg/core-st@0.11.0/dist/ffmpeg-core.js',
-//     log: true
-// });
 
 // Called at script's loading
 window.addEventListener("load", getStream, false);
