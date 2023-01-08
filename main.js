@@ -1,6 +1,4 @@
-// import FFmpeg from "@ffmpeg/ffmpeg";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-// import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg/dist/ffmpeg.min.js";
 
 
 
@@ -8,34 +6,15 @@ var theStream;
 var gif;
 let allTheBlobs = [];
 
-// const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ log: true });
 
 
 // window.addEventListener("load", getStream, false);
+// window.addEventListener("load", initCSS, false);
 document.getElementById("initCamera").addEventListener("click", getStream, false);
 document.getElementById("takePhotoButton").addEventListener("click", takePhoto, false);
 document.getElementById("createGIFButton").addEventListener('click', encodeGIF, false);
 document.getElementById("downloadButton").addEventListener('click', download, false);
-
-
-function getUserMedia(constraints) {
-    // if Promise-based API is available, use it
-    if (navigator.mediaDevices) {
-        return navigator.mediaDevices.getUserMedia(constraints);
-    }
-
-    // otherwise try falling back to old, possibly prefixed API...
-    var legacyApi = navigator.getUserMedia || navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-    if (legacyApi) {
-        // ...and promisify it
-        return new Promise(function (resolve, reject) {
-            legacyApi.bind(navigator)(constraints, resolve, reject);
-        });
-    }
-}
 
 
 function getStream(type) {
@@ -66,16 +45,41 @@ function getStream(type) {
                 mediaControl.src = (window.URL || window.webkitURL).createObjectURL(stream);
             }
 
-            // mediaControl.play();
             theStream = stream;
+
+            document.querySelector('.beforeCamInit').style.display = "none";
+            document.querySelector('#camDiv').style.display = "flex";
+            document.querySelector('.afterCamInit').style.display = "flex";
         })
         .catch(function (err) {
             alert('Error: ' + err);
         });
-    
-        document.querySelector('.beforeCamInit').style.display = "none";
-        document.querySelector('.afterCamInit').style.display = "flex";
 }
+
+
+function getUserMedia(constraints) {
+    // if Promise-based API is available, use it
+    if (navigator.mediaDevices) {
+        return navigator.mediaDevices.getUserMedia(constraints);
+    }
+
+    // otherwise try falling back to old, possibly prefixed API...
+    var legacyApi = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    if (legacyApi) {
+        // ...and promisify it
+        return new Promise(function (resolve, reject) {
+            legacyApi.bind(navigator)(constraints, resolve, reject);
+        });
+    }
+}
+
+
+// function initCSS() {
+//     // document.querySelector('.mediaToDisplayLater').style.display = "none";
+//     document.querySelector('.afterCamInit').style.display = "none";
+// }
 
 
 function takePhoto() {
@@ -95,37 +99,28 @@ function takePhoto() {
         .then(blob => {
             var thePhoto = document.getElementById("photo");
             thePhoto.src = URL.createObjectURL(blob);
-            document.querySelector('#photo').style.display = "flex";
-            document.querySelector('#createGIFButton').style.display = "flex";
-            // console.log(blob);
             allTheBlobs.push(blob);
+            document.querySelector('#photoDiv').style.display = "flex";
         })
         .catch(err => alert('Error: ' + err));
 }
 
 
 async function encodeGIF() {
-    // console.log(allTheBlobs)
     if (allTheBlobs.length === 0) {
         alert('Take photos first!');
         return;
     }
 
-    // const message = document.getElementById('message');
-    // document.querySelector('#message').style.display = "flex";
-
     if (!ffmpeg.isLoaded()) {
-        // message.innerHTML = 'Loading ffmpeg-core.js';
         await ffmpeg.load();
     }
 
-    // message.innerHTML = 'Loading data';
     for (let i = 0; i < allTheBlobs.length; i += 1) {
         const num = `${i}`;
         ffmpeg.FS('writeFile', `${num}.png`, await fetchFile(allTheBlobs[i]));
     }
 
-    // message.innerHTML = 'Start encoding';
     await ffmpeg.run(
         '-framerate', '2',
         '-pattern_type', 'glob',
@@ -141,9 +136,7 @@ async function encodeGIF() {
 
     gif = document.getElementById('gif');
     gif.src = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }));
-    // message.innerHTML = 'Done';
-    // document.querySelector('#message').style.display = "none";
-    document.querySelector('#downloadButton').style.display = "flex";
+    document.querySelector('#gifDiv').style.display = "flex";
 
     allTheBlobs = [];
 }

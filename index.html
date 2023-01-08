@@ -7,13 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>COLPICHE</title>
     <link rel="stylesheet" href="style.css" />
-    <!-- <script type="importmap">
-        {
-            "imports": {
-                "ffmpeg": "../node_modules/@ffmpeg/ffmpeg/src/index.js"
-            }
-        }
-    </script> -->
     <script type="module" src="/main.js" defer></script>
 </head>
 
@@ -27,19 +20,20 @@
         </div>
         <div class="afterCamInit">
             <div class="mediaDiv" id="camDiv">
+                <div class="text">Your face</div>
                 <video class="media" id="camera" autoplay></video>
+                <button type="button" id="takePhotoButton">Take photo</button>
             </div>
             <div class="mediaDiv" id="photoDiv">
-                <button type="button" id="takePhotoButton">Take photo</button>
-                <img class="media" class="mediaToDisplayLater" id="photo">
+                <div class="text">Your photos</div>
+                <img class="media" id="photo" />
+                <button type="button" id="createGIFButton">Create GIF</button>
             </div>
             <div class="mediaDiv" id="gifDiv">
-                <button type="button" class="buttonToDisplayLater" id="createGIFButton">Create GIF</button>
-                <!-- <p id="message"></p> -->
-                <img class="media" class="mediaToDisplayLater" id="gif" />
-            </div>
-            <div class="mediaDiv">
-                <button type="button" class="buttonToDisplayLater" id="downloadButton">Download</button>
+                <div class="text">Your awesome GIF</div>
+                <img class="media" id="gif" />
+                <button type="button" id="downloadButton">Download</button>
+                
             </div>
         </div>
     </div>
