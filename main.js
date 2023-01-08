@@ -9,7 +9,7 @@ const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ log: true });
 
 
-window.addEventListener("load", getStream, false);
+// window.addEventListener("load", getStream, false);
 document.getElementById("initCamera").addEventListener("click", getStream, false);
 document.getElementById("takePhotoButton").addEventListener("click", takePhoto, false);
 document.getElementById("createGIFButton").addEventListener('click', encodeGIF, false);
@@ -36,18 +36,19 @@ function getUserMedia(constraints) {
 
 
 function getStream(type) {
-    if (!navigator.mediaDevices &&
-        !navigator.getUserMedia &&
-        !navigator.webkitGetUserMedia &&
-        !navigator.mozGetUserMedia &&
-        !navigator.msGetUserMedia
-    ) {
-        alert('User Media API not supported.');
-        return;
-    }
+    // if (!navigator.mediaDevices &&
+    //     !navigator.getUserMedia &&
+    //     !navigator.webkitGetUserMedia &&
+    //     !navigator.mozGetUserMedia &&
+    //     !navigator.msGetUserMedia
+    // ) {
+    //     alert('User Media API not supported.');
+    //     return;
+    // }
 
     var constraints = {
-        video: true
+        video: true,
+        audio: false
     };
 
     getUserMedia(constraints)
@@ -153,7 +154,3 @@ function download() {
     a.download = 'your-awesome-reaction-gif.gif';
     a.click();
 }
-
-
-
-// window.onload = initCamera;
