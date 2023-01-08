@@ -1,12 +1,14 @@
-import FFmpeg from "@ffmpeg/ffmpeg";
-// import FFmpeg from "ffmpeg";
+// import FFmpeg from "@ffmpeg/ffmpeg";
+// import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg/dist/ffmpeg.min.js";
+
 
 
 var theStream;
 var gif;
 let allTheBlobs = [];
 
-const { createFFmpeg, fetchFile } = FFmpeg;
+// const { createFFmpeg, fetchFile } = FFmpeg;
 const ffmpeg = createFFmpeg({ log: true });
 
 
